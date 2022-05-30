@@ -4,6 +4,9 @@ const path = require('path');
 const mongoose = require('mongoose');
 const Campground = require('./models/campground')
 const methodOverride = require('method-override');
+const ejsMate = require('ejs-mate')
+
+
 mongoose.connect('mongodb://localhost:27017/yelp-camp', {
     // useNewUrlParser: true,
     // useCreateIndex: true, 
@@ -16,11 +19,14 @@ db.once("open", () => {
     console.log("Database Connection");
 })
 
+
+app.engine('ejs', ejsMate);
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
+// these below work as a middleware between a req and res.
+// They run every time
 // to parse the body
-
 app.use(express.urlencoded({extended: true}))
 app.use(methodOverride('_method'))
 
@@ -66,8 +72,6 @@ app.delete('/campgrounds/:id', async(req, res) =>  {
     await Campground.findByIdAndDelete(id);
     res.redirect('/campgrounds');
 })
-
-
 
 
 
